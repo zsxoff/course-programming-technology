@@ -29,7 +29,7 @@ const std::vector<std::vector<float>> matmul(
 
     // Compute matrix multiplication.
     for (size_t i = 0; i < L; ++i) {
-        for (size_t j = 0; j < M; ++j) {
+        for (size_t j = 0; j < N; ++j) {
             for (size_t k = 0; k < M; ++k) {
                 C[i][j] += A[i][k] * B[k][j];
             }
