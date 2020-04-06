@@ -51,10 +51,18 @@ int main(int argc, char* argv[]) {
     // ------------------------------------------------------------------------
     // Get files paths.
 
-    // TODO(zsxoff): Remove hard-coded paths.
+    if (argc < 3) {
+        std::cout << "! Arguments error !" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Please specify files with matrices as args:" << std::endl;
+        std::cout << "./app matrix_A.txt matrix_B.txt" << std::endl;
+        std::cout << std::endl;
 
-    const std::string p1 = "./matrices/matrix_3x3_1.txt";
-    const std::string p2 = "./matrices/matrix_3x3_2.txt";
+        return -1;
+    }
+
+    const std::string p1 = argv[1];
+    const std::string p2 = argv[2];
 
     // ------------------------------------------------------------------------
     // Get matrices from file.
