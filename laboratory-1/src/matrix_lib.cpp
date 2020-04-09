@@ -14,7 +14,7 @@ const std::vector<std::vector<float>> matmul(
     const size_t M = A[0].size();  // A Cols
     const size_t N = B[0].size();  // B Cols
 
-    // Init new vector with sizes M rows, N cols.
+    // Init new vector with sizes L rows, N cols.
     std::vector<std::vector<float>> C;
     C.assign(L, std::vector<float>(N));
 
