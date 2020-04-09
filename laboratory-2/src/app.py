@@ -65,10 +65,10 @@ class App:
         self._builder.connect_signals(
             {
                 "onDestroy": Gtk.main_quit,
-                "onButtonU": self._onButtonU,
-                "onButtonD": self._onButtonD,
-                "onButtonL": self._onButtonL,
-                "onButtonR": self._onButtonR,
+                "onButtonU": self._on_button_u,
+                "onButtonD": self._on_button_d,
+                "onButtonL": self._on_button_l,
+                "onButtonR": self._on_button_r,
                 "onButtonReset": self._full_reset_callback,
             }
         )
@@ -142,9 +142,8 @@ class App:
     def _text_and_time(text):
         return strftime("%H:%M:%S", gmtime()) + " " + text
 
-    def _move(self, move_object):
+    def _move_player(self, move_object):
         if move_object.move():
-
             # If player get a move, redraw maze and dump XML state.
             self._replot_maze()
             text = self._text_and_time(move_object.text_succ)
@@ -154,29 +153,31 @@ class App:
             # If player in final position, drop XML state.
             if self._maze.is_hero_in_final():
                 text = self._text_and_time(src.text_placeholders.TEXT_WIN)
-
                 self._append_into_text_window(text)
                 self._xml_delete()
+        else:
+            # Print fail message if wall ahead.
+            text = self._text_and_time(move_object.text_fail)
+            self._append_into_text_window(text)
 
-            return
+    def _on_button_u(self, button):
+        _ = button
+        self._move_player(self._moves["U"])
 
-        # Print fail message if wall ahead.
-        text = self._text_and_time(move_object.text_fail)
-        self._append_into_text_window(text)
+    def _on_button_d(self, button):
+        _ = button
+        self._move_player(self._moves["D"])
 
-    def _onButtonU(self, button):
-        self._move(self._moves["U"])
+    def _on_button_l(self, button):
+        _ = button
+        self._move_player(self._moves["L"])
 
-    def _onButtonD(self, button):
-        self._move(self._moves["D"])
-
-    def _onButtonL(self, button):
-        self._move(self._moves["L"])
-
-    def _onButtonR(self, button):
-        self._move(self._moves["R"])
+    def _on_button_r(self, button):
+        _ = button
+        self._move_player(self._moves["R"])
 
     def _full_reset_callback(self, button):
+        _ = button
         self._maze.reset()
         self._xml_rewrite()
         self._replot_maze()
