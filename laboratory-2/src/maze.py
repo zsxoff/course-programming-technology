@@ -72,7 +72,10 @@ class Maze:
         return False
 
     def is_hero_in_final(self):
-        return (self._player_x, self._player_y) == (self._win_pos[0], self._win_pos[1],)
+        return (self._player_x, self._player_y) == (
+            self._win_pos[0],
+            self._win_pos[1],
+        )
 
     def U(self):
         if self._move(self._player_x - 1, self._player_y):
@@ -118,7 +121,9 @@ class Maze:
         )
 
         # Add help text.
-        text_foot = "\n".join([f"{P} - персонаж", f"{W} - стена", f"{F} - выход"])
+        text_foot = "\n".join(
+            [f"{P} - персонаж", f"{W} - стена", f"{F} - выход"]
+        )
 
         # Generate full text.
         text_full = "\n\n".join([text_head, text_maze, text_foot])
