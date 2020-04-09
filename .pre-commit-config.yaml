@@ -45,10 +45,3 @@ repos:
         language: system
         entry: flake8
         types: [python]
-
-      - id: pylint
-        name: python - pylint
-        stages: [commit]
-        language: system
-        entry: pylint
-        types: [python]
