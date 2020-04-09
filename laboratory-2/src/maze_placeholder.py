@@ -23,5 +23,6 @@ MAZE_MAP_CLASSIC = np.asarray(
         [W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W],
         [W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W],
         [W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W],
-    ]
+    ],
+    dtype=np.uint8,
 )
