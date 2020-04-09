@@ -5,8 +5,14 @@ from src.maze_placeholder import MAZE_MAP_CLASSIC, E, F, P, W
 
 class Maze:
     def __init__(self):
-        # Init maze.
-        self.restart_maze()
+        self.reset()
+
+    def reset(self):
+        self._maze_arr = MAZE_MAP_CLASSIC.copy()
+        self._maze_w = self._maze_arr.shape[0]
+        self._maze_h = self._maze_arr.shape[1]
+        self._player_x = 1
+        self._player_y = 1
 
         # Set final exit coords.
         wins_positions = np.argwhere(self._maze_arr == F)
@@ -16,13 +22,8 @@ class Maze:
 
         self._win_pos = wins_positions[0]
 
-    def restart_maze(self):
-        """Initialize new maze."""
-        self._maze_arr = MAZE_MAP_CLASSIC
-        self._maze_w = self._maze_arr.shape[0]
-        self._maze_h = self._maze_arr.shape[1]
-        self._x = 1
-        self._y = 1
+    def maze_tostring(self):
+        return np.array2string(self._maze_arr, separator=",")
 
     # -------------------------------------------------------------------------
 
@@ -34,10 +35,10 @@ class Maze:
             (tuple): Pair of coordinates in array.
 
         """
-        return self._x, self._y
+        return self._player_x, self._player_y
 
     def set_position(self, x, y):
-        self._x, self._y = x, y
+        self._player_x, self._player_y = x, y
 
     def get_maze(self):
         return self._maze_arr
@@ -71,37 +72,37 @@ class Maze:
         return False
 
     def is_hero_in_final(self):
-        return self._x == self._win_pos[0] and self._y == self._win_pos[1]
+        return (self._player_x, self._player_y) == (self._win_pos[0], self._win_pos[1],)
 
     def U(self):
-        if self._move(self._x - 1, self._y):
-            self._maze_arr[self._x][self._y] = E
-            self._x -= 1
-            self._maze_arr[self._x][self._y] = P
+        if self._move(self._player_x - 1, self._player_y):
+            self._maze_arr[self._player_x][self._player_y] = E
+            self._player_x -= 1
+            self._maze_arr[self._player_x][self._player_y] = P
             return True
         return False
 
     def D(self):
-        if self._move(self._x + 1, self._y):
-            self._maze_arr[self._x][self._y] = E
-            self._x += 1
-            self._maze_arr[self._x][self._y] = P
+        if self._move(self._player_x + 1, self._player_y):
+            self._maze_arr[self._player_x][self._player_y] = E
+            self._player_x += 1
+            self._maze_arr[self._player_x][self._player_y] = P
             return True
         return False
 
     def L(self):
-        if self._move(self._x, self._y - 1):
-            self._maze_arr[self._x][self._y] = E
-            self._y -= 1
-            self._maze_arr[self._x][self._y] = P
+        if self._move(self._player_x, self._player_y - 1):
+            self._maze_arr[self._player_x][self._player_y] = E
+            self._player_y -= 1
+            self._maze_arr[self._player_x][self._player_y] = P
             return True
         return False
 
     def R(self):
-        if self._move(self._x, self._y + 1):
-            self._maze_arr[self._x][self._y] = E
-            self._y += 1
-            self._maze_arr[self._x][self._y] = P
+        if self._move(self._player_x, self._player_y + 1):
+            self._maze_arr[self._player_x][self._player_y] = E
+            self._player_y += 1
+            self._maze_arr[self._player_x][self._player_y] = P
             return True
         return False
 
