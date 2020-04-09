@@ -7,7 +7,7 @@ xml/*
 !xml/.gitkeep
 
 # Glade temporary files
-glade/*.~
+glade/*.glade~
 
 # Visual Studio Code
 .vscode/
