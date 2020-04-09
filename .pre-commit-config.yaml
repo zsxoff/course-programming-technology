@@ -24,3 +24,31 @@ repos:
         stages: [commit]
         entry: cppcheck
         types: [c++]
+
+      - id: isort
+        name: python - isort
+        stages: [commit]
+        language: system
+        entry: isort
+        types: [python]
+
+      - id: black
+        name: python - black
+        stages: [commit]
+        language: system
+        entry: black
+        types: [python]
+
+      - id: flake8
+        name: python - flake8
+        stages: [commit]
+        language: system
+        entry: flake8
+        types: [python]
+
+      - id: pylint
+        name: python - pylint
+        stages: [commit]
+        language: system
+        entry: pylint
+        types: [python]
