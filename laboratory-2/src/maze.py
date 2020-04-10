@@ -9,8 +9,6 @@ class Maze:
 
     def reset(self):
         self._maze_arr = MAZE_MAP_CLASSIC.copy()
-        self._maze_w = self._maze_arr.shape[0]
-        self._maze_h = self._maze_arr.shape[1]
         self._player_x = 1
         self._player_y = 1
 
@@ -23,7 +21,10 @@ class Maze:
         self._win_pos = wins_positions[0]
 
     def maze_tostring(self):
-        return np.array2string(self._maze_arr, separator=",")
+        return ",".join([str(x) for x in self._maze_arr.flatten()])
+
+    def maze_fromvector(self, vector, w, h):
+        self._maze_arr = vector.reshape((w, h))
 
     # -------------------------------------------------------------------------
 
@@ -36,6 +37,9 @@ class Maze:
 
         """
         return self._player_x, self._player_y
+
+    def get_maze_size(self):
+        return self._maze_arr.shape
 
     def set_position(self, x, y):
         self._player_x, self._player_y = x, y
@@ -61,7 +65,10 @@ class Maze:
 
         """
         # Exception for out of bound.
-        if x < 0 or x > self._maze_h + 1 or y < 0 or y > self._maze_w + 1:
+        maze_w = self._maze_arr.shape[0]
+        maze_h = self._maze_arr.shape[1]
+
+        if x < 0 or x > maze_h + 1 or y < 0 or y > maze_w + 1:
             return False
 
         # If empty space or final point ahead - go.

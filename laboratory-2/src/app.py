@@ -5,6 +5,8 @@ from pathlib import Path
 from time import gmtime, strftime
 from typing import Callable
 
+import numpy as np
+
 import src.text_placeholders
 from src.maze import Maze
 
@@ -26,9 +28,6 @@ class App:
     def __init__(self, glade_file):
         self._builder = Gtk.Builder()
         self._builder.add_from_file(glade_file)
-
-        # XML file parameters.
-        self._xml_name = "state.xml"
 
         # Init buffers.
         self._buffer_maze = self._builder.get_object("buffer_maze")
@@ -73,6 +72,11 @@ class App:
             }
         )
 
+        # XML file parameters.
+        self._xml_name = "state.xml"
+        self._xml_path = Path("xml") / self._xml_name
+        self._xml_init()
+
     def run(self):
         """Run GTK window."""
         self._builder.get_object("main_window").show_all()
@@ -97,16 +101,14 @@ class App:
 
     # -------------------------------------------------------------------------
 
-    def _xml_load(self, xml_file=None):
-        pass
-
-    def _xml_dump(self):
+    def _xml_dump(self) -> bool:
         """Dump current state to XML file."""
         root = ET.Element("root")
 
         # Parameters.
         x, y = self._maze.get_position()
         maze_txt = self._maze.maze_tostring()
+        w, h = self._maze.get_maze_size()
 
         # Dump player info.
         player = ET.SubElement(root, "player")
@@ -116,21 +118,52 @@ class App:
         # Dump current maze.
         maze = ET.SubElement(root, "maze")
         ET.SubElement(maze, "map").text = maze_txt
+        ET.SubElement(maze, "w").text = str(w)
+        ET.SubElement(maze, "h").text = str(h)
 
         # Dump file.
         tree = ET.ElementTree(root)
-        tree.write(Path("xml") / self._xml_name)
+        tree.write(self._xml_path)
 
-    def _xml_delete(self):
-        """Delete XML state file."""
-        file_path = Path("xml") / self._xml_name
+        return True
 
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    def _xml_init(self) -> bool:
+        if not os.path.exists(self._xml_path):
+            return False
 
-    def _xml_rewrite(self):
-        self._xml_delete()
-        self._xml_dump()
+        tree = ET.parse(self._xml_path)
+        root = tree.getroot()
+
+        # Get player info.
+        player = root.findall("player")[0]
+        player_x = int(player.find("x").text)
+        player_y = int(player.find("y").text)
+
+        # Get maze.
+        maze = root.findall("maze")[0]
+        maze_w = int(maze.find("w").text)
+        maze_h = int(maze.find("h").text)
+        maze_map = maze.find("map").text
+
+        # Init maze.
+        maze_vector = np.fromstring(maze_map, sep=",", dtype=np.uint8)
+        self._maze.maze_fromvector(maze_vector, maze_w, maze_h)
+        self._maze.set_position(player_x, player_y)
+
+        self._replot_maze()
+
+        # Say about state.
+        text = self._text_and_time(src.text_placeholders.TEXT_XML)
+        self._append_into_text_window(text)
+
+    def _xml_delete(self) -> bool:
+        if os.path.exists(self._xml_path):
+            os.remove(self._xml_path)
+            return True
+        return False
+
+    def _xml_rewrite(self) -> bool:
+        return all([self._xml_delete(), self._xml_dump()])
 
     # -------------------------------------------------------------------------
 
