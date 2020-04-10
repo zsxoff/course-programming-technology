@@ -8,6 +8,7 @@ class Maze:
         self.reset()
 
     def reset(self):
+        """Reset maze state."""
         self._maze_arr = MAZE_MAP_CLASSIC.copy()
         self._player_x = 1
         self._player_y = 1
@@ -20,35 +21,58 @@ class Maze:
 
         self._win_pos = wins_positions[0]
 
-    def maze_tostring(self):
-        return ",".join([str(x) for x in self._maze_arr.flatten()])
-
-    def maze_fromvector(self, vector, w, h):
-        self._maze_arr = vector.reshape((w, h))
-
-    # -------------------------------------------------------------------------
-
-    def get_position(self):
+    def maze_to_string(self):
         """
-        Return player position.
+        Dump flatten maze map as string vector.
 
         Returns:
-            (tuple): Pair of coordinates in array.
+            str: string vector of flatten map.
+
+        """
+        return ",".join([str(x) for x in self._maze_arr.flatten()])
+
+    def maze_from_vector(self, vector, w, h):
+        """
+        Create 2D maze map from flatten vector.
+
+        Args:
+            vector (numpy.ndarray): Flatten map vector.
+            w (int): Width of matrix.
+            h (int): Height of matrix.
+
+        """
+        self._maze_arr = vector.reshape((w, h))
+
+    def get_player_position(self):
+        """
+        Get player position.
+
+        Returns:
+            tuple: Pair of coordinates in array.
 
         """
         return self._player_x, self._player_y
 
-    def get_maze_size(self):
-        return self._maze_arr.shape
+    def set_player_position(self, x, y):
+        """
+        Set player position.
 
-    def set_position(self, x, y):
+        Args:
+            x (int): Position in row.
+            y (int): Position in col.
+
+        """
         self._player_x, self._player_y = x, y
 
-    def get_maze(self):
-        return self._maze_arr
+    def get_maze_size(self):
+        """
+        Get maze size as tuple.
 
-    def set_maze(self, maze_arr):
-        self._maze_arr = maze_arr
+        Returns:
+            tuple: Maze matrix shape as tuple of (rows, cols).
+
+        """
+        return self._maze_arr.shape
 
     # -------------------------------------------------------------------------
 
@@ -78,7 +102,7 @@ class Maze:
         # else, wall ahead.
         return False
 
-    def is_hero_in_final(self):
+    def is_player_in_final(self):
         return (self._player_x, self._player_y) == (
             self._win_pos[0],
             self._win_pos[1],

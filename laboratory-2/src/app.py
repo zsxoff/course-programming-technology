@@ -35,7 +35,6 @@ class App:
 
         # Init maze.
         self._maze = Maze()
-        self._replot_maze()
 
         self._moves = {
             "U": Move(
@@ -64,10 +63,10 @@ class App:
         self._builder.connect_signals(
             {
                 "onDestroy": Gtk.main_quit,
-                "onButtonU": self._on_button_u,
-                "onButtonD": self._on_button_d,
-                "onButtonL": self._on_button_l,
-                "onButtonR": self._on_button_r,
+                "onButtonU": self._button_move_u,
+                "onButtonD": self._button_move_d,
+                "onButtonL": self._button_move_l,
+                "onButtonR": self._button_move_r,
                 "onButtonReset": self._full_reset_callback,
             }
         )
@@ -75,14 +74,26 @@ class App:
         # XML file parameters.
         self._xml_name = "state.xml"
         self._xml_path = Path("xml") / self._xml_name
-        self._xml_init()
+        self._xml_load_state()
+        self._gui_replot_maze()
 
     def run(self):
         """Run GTK window."""
         self._builder.get_object("main_window").show_all()
         Gtk.main()
 
-    def _append_into_text_window(self, text):
+    def _gui_replot_maze(self):
+        """Redraw current maze map in text buffer."""
+        self._buffer_maze.set_text(self._maze.draw_text())
+
+    def _gui_append_into_log(self, text):
+        """
+        Append text into log window, then scroll at the end of window.
+
+        Args:
+            text (str): Text for append.
+
+        """
         # Insert text into end of buffer.
         self._buffer_text.insert(self._buffer_text.get_end_iter(), text + "\n")
 
@@ -99,15 +110,19 @@ class App:
             yalign=0,
         )
 
-    # -------------------------------------------------------------------------
+    def _xml_dump(self):
+        """
+        Dump current state to XML file.
 
-    def _xml_dump(self) -> bool:
-        """Dump current state to XML file."""
+        Returns:
+            bool: True if state successfully dumps else False.
+
+        """
         root = ET.Element("root")
 
         # Parameters.
-        x, y = self._maze.get_position()
-        maze_txt = self._maze.maze_tostring()
+        x, y = self._maze.get_player_position()
+        maze_txt = self._maze.maze_to_string()
         w, h = self._maze.get_maze_size()
 
         # Dump player info.
@@ -127,7 +142,14 @@ class App:
 
         return True
 
-    def _xml_init(self) -> bool:
+    def _xml_load_state(self):
+        """
+        Load current XML state from file.
+
+        Returns:
+            bool: True if state successfully load else False.
+
+        """
         if not os.path.exists(self._xml_path):
             return False
 
@@ -147,65 +169,87 @@ class App:
 
         # Init maze.
         maze_vector = np.fromstring(maze_map, sep=",", dtype=np.uint8)
-        self._maze.maze_fromvector(maze_vector, maze_w, maze_h)
-        self._maze.set_position(player_x, player_y)
+        self._maze.maze_from_vector(maze_vector, maze_w, maze_h)
+        self._maze.set_player_position(player_x, player_y)
 
-        self._replot_maze()
+        self._gui_replot_maze()
 
         # Say about state.
         text = self._text_and_time(src.text_placeholders.TEXT_XML)
-        self._append_into_text_window(text)
+        self._gui_append_into_log(text)
 
-    def _xml_delete(self) -> bool:
+        return True
+
+    def _xml_delete(self):
+        """
+        Delete current XML state file.
+
+        Returns:
+            bool: True if file removed else False.
+
+        """
         if os.path.exists(self._xml_path):
             os.remove(self._xml_path)
             return True
         return False
 
-    def _xml_rewrite(self) -> bool:
+    def _xml_rewrite(self):
+        """
+        Delete current XML state file and dump new.
+
+        Returns:
+            bool: True if file rewrited else False.
+
+        """
         return all([self._xml_delete(), self._xml_dump()])
-
-    # -------------------------------------------------------------------------
-
-    def _replot_maze(self):
-        """Redraw current maze map in text buffer."""
-        self._buffer_maze.set_text(self._maze.draw_text())
 
     @staticmethod
     def _text_and_time(text):
         return strftime("%H:%M:%S", gmtime()) + " " + text
 
     def _move_player(self, move_object):
+        """
+        Move player by state in move_object.
+
+        Args:
+            move_object (Move): move object with moving state.
+
+        """
         if move_object.move():
             # If player get a move, redraw maze and dump XML state.
-            self._replot_maze()
+
+            self._gui_replot_maze()
             text = self._text_and_time(move_object.text_succ)
-            self._append_into_text_window(text)
+            self._gui_append_into_log(text)
             self._xml_dump()
 
             # If player in final position, drop XML state.
-            if self._maze.is_hero_in_final():
+
+            if self._maze.is_player_in_final():
                 text = self._text_and_time(src.text_placeholders.TEXT_WIN)
-                self._append_into_text_window(text)
+                self._gui_append_into_log(text)
                 self._xml_delete()
         else:
             # Print fail message if wall ahead.
-            text = self._text_and_time(move_object.text_fail)
-            self._append_into_text_window(text)
 
-    def _on_button_u(self, button):
+            text = self._text_and_time(move_object.text_fail)
+            self._gui_append_into_log(text)
+
+    # -------------------------------------------------------------------------
+
+    def _button_move_u(self, button):
         _ = button
         self._move_player(self._moves["U"])
 
-    def _on_button_d(self, button):
+    def _button_move_d(self, button):
         _ = button
         self._move_player(self._moves["D"])
 
-    def _on_button_l(self, button):
+    def _button_move_l(self, button):
         _ = button
         self._move_player(self._moves["L"])
 
-    def _on_button_r(self, button):
+    def _button_move_r(self, button):
         _ = button
         self._move_player(self._moves["R"])
 
@@ -213,7 +257,7 @@ class App:
         _ = button
         self._maze.reset()
         self._xml_rewrite()
-        self._replot_maze()
+        self._gui_replot_maze()
 
         text = self._text_and_time(src.text_placeholders.TEXT_RELOAD)
-        self._append_into_text_window(text)
+        self._gui_append_into_log(text)
