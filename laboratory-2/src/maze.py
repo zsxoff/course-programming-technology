@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.maze_placeholder import MAZE_MAP_CLASSIC, E, F, P, W
+from src.placeholders_maze import MAZE_MAP_CLASSIC, E, F, P, W
 
 
 class Maze:
