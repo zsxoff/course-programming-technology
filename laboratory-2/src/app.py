@@ -82,6 +82,27 @@ class App:
         self._builder.get_object("main_window").show_all()
         Gtk.main()
 
+    def _gui_buttons_switch(self, enabled):
+        """
+        Turn on or off control buttons.
+
+        Args:
+            enabled (bool): Buttons enable state.
+
+        """
+        buttons = ["button_u", "button_d", "button_l", "button_r"]
+
+        for button in buttons:
+            self._builder.get_object(button).set_sensitive(enabled)
+
+    def _gui_enable_control(self):
+        """Enable control buttons."""
+        self._gui_buttons_switch(enabled=True)
+
+    def _gui_disable_control(self):
+        """Disable control buttons."""
+        self._gui_buttons_switch(enabled=False)
+
     def _gui_replot_maze(self):
         """Redraw current maze map in text buffer."""
         self._buffer_maze.set_text(self._maze.draw_text())
@@ -229,6 +250,7 @@ class App:
                 text = self._text_and_time(src.placeholders_text.TEXT_WIN)
                 self._gui_append_into_log(text)
                 self._xml_delete()
+                self._gui_disable_control()
         else:
             # Print fail message if wall ahead.
 
@@ -258,6 +280,8 @@ class App:
         self._maze.reset()
         self._xml_rewrite()
         self._gui_replot_maze()
+
+        self._gui_enable_control()
 
         text = self._text_and_time(src.placeholders_text.TEXT_RELOAD)
         self._gui_append_into_log(text)
