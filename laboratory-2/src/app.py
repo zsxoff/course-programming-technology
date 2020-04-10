@@ -38,22 +38,22 @@ class App:
 
         self._moves = {
             "U": Move(
-                move=self._maze.U,
+                move=self._maze.move_u,
                 text_succ=src.text_placeholders.SUCC_U,
                 text_fail=src.text_placeholders.FAIL_U,
             ),
             "D": Move(
-                move=self._maze.D,
+                move=self._maze.move_d,
                 text_succ=src.text_placeholders.SUCC_D,
                 text_fail=src.text_placeholders.FAIL_D,
             ),
             "L": Move(
-                move=self._maze.L,
+                move=self._maze.move_l,
                 text_succ=src.text_placeholders.SUCC_L,
                 text_fail=src.text_placeholders.FAIL_L,
             ),
             "R": Move(
-                move=self._maze.R,
+                move=self._maze.move_r,
                 text_succ=src.text_placeholders.SUCC_R,
                 text_fail=src.text_placeholders.FAIL_R,
             ),

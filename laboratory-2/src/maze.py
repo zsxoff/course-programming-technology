@@ -103,44 +103,65 @@ class Maze:
         return False
 
     def is_player_in_final(self):
+        """
+        Check if player in final position.
+
+        Returns:
+            bool: True if player in final position else False.
+
+        """
         return (self._player_x, self._player_y) == (
             self._win_pos[0],
             self._win_pos[1],
         )
 
-    def U(self):
+    def move_u(self):
+        """Move player up."""
         if self._move(self._player_x - 1, self._player_y):
             self._maze_arr[self._player_x][self._player_y] = E
+
             self._player_x -= 1
             self._maze_arr[self._player_x][self._player_y] = P
+
             return True
+
         return False
 
-    def D(self):
+    def move_d(self):
+        """Move player down."""
         if self._move(self._player_x + 1, self._player_y):
             self._maze_arr[self._player_x][self._player_y] = E
+
             self._player_x += 1
             self._maze_arr[self._player_x][self._player_y] = P
+
             return True
+
         return False
 
-    def L(self):
+    def move_l(self):
+        """Move player left."""
         if self._move(self._player_x, self._player_y - 1):
             self._maze_arr[self._player_x][self._player_y] = E
+
             self._player_y -= 1
             self._maze_arr[self._player_x][self._player_y] = P
+
             return True
+
         return False
 
-    def R(self):
+    def move_r(self):
+        """Move player right."""
         if self._move(self._player_x, self._player_y + 1):
             self._maze_arr[self._player_x][self._player_y] = E
+
             self._player_y += 1
             self._maze_arr[self._player_x][self._player_y] = P
-            return True
-        return False
 
-    # -------------------------------------------------------------------------
+            return True
+
+        return False
 
     def draw_text(self):
         # Text header.
@@ -152,15 +173,13 @@ class Maze:
         )
 
         # Add help text.
-        text_foot = "\n".join(
-            [f"{P} - персонаж", f"{W} - стена", f"{F} - выход"]
-        )
+        text_foot = "\n".join([f"{P} - персонаж", f"{W} - стена"])
 
         # Generate full text.
         text_full = "\n\n".join([text_head, text_maze, text_foot])
 
         # Replace symbols in final text.
-        replaces = [(str(E), " "), (str(W), "#"), (str(F), "F"), (str(P), "+")]
+        replaces = [(str(E), " "), (str(W), "#"), (str(F), " "), (str(P), "*")]
 
         for pair in replaces:
             text_full = text_full.replace(pair[0], pair[1])

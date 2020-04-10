@@ -82,7 +82,7 @@ Hello, World!</property>
                         <property name="vadjustment">log_adjustment</property>
                         <property name="vscroll_policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap_mode">char</property>
+                        <property name="wrap_mode">word</property>
                         <property name="buffer">buffer_text</property>
                       </object>
                     </child>
