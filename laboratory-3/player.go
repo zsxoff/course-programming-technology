@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
-	"log"
 	"strconv"
 )
 
@@ -145,21 +144,17 @@ func (p *Player) Init() {
 }
 
 // ToJson function convert player to string JSON.
-func (p *Player) ToJson() string {
+func (p *Player) ToJson() (string, error) {
 	bytesJson, err := json.Marshal(p)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return string(bytesJson)
+	return string(bytesJson), nil
 }
 
 // FromJson convert string JSON to player.
-func (p *Player) FromJson(stringJson string) {
-	err := json.Unmarshal([]byte(stringJson), &p)
-
-	if err != nil {
-		log.Println(err)
-	}
+func (p *Player) FromJson(stringJson *string) error {
+	return json.Unmarshal([]byte(*stringJson), &p)
 }

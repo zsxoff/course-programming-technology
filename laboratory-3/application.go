@@ -85,7 +85,11 @@ func startServerMode(connConfig *ConnectionConfig) {
 
 			// Create client player entity.
 			var clientPlayer Player
-			clientPlayer.FromJson(messageRecv)
+
+			err := clientPlayer.FromJson(&messageRecv)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			// Resolve players battle.
 			playerStatus := StatusUndefined
@@ -174,7 +178,11 @@ func startClientMode(connConfig *ConnectionConfig) {
 		p.MakeDecision()
 
 		// Send player status.
-		messageSend(p.ToJson(), &conn)
+		marshal, err := p.ToJson()
+		if err != nil {
+			log.Fatal(err)
+		}
+		messageSend(marshal, &conn)
 
 		// Receive message.
 		playerStatus := messageRecv(&conn)
