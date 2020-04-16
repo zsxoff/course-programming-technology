@@ -1,6 +1,9 @@
 # Project binary files.
 laboratory-3
 
+# GoLand
+.idea/
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
