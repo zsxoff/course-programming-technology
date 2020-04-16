@@ -56,15 +56,15 @@ func (p *Player) HireWarrior() bool {
 
 // PrintCurrentTurn print colored current Turn number.
 func (p *Player) PrintCurrentTurn() {
-	color.Green("\n-= Turn #" + strconv.Itoa(p.Turn) + " =-\n\n")
+	color.Green("\n- - = Ход #" + strconv.Itoa(p.Turn) + " = - -\n\n")
 }
 
 // PrintResources function print player's current resources.
 func (p *Player) PrintResources() {
-	color.Yellow("You have " +
-		strconv.Itoa(p.CountCrystals) + " crystals, " +
-		strconv.Itoa(p.CountWorkers) + " workers and " +
-		strconv.Itoa(p.CountWarriors) + " warriors.\n\n")
+	color.Yellow("Ваши ресурсы: " +
+		strconv.Itoa(p.CountCrystals) + " кристаллов, " +
+		strconv.Itoa(p.CountWorkers) + " рабочих и " +
+		strconv.Itoa(p.CountWarriors) + " воинов.\n\n")
 }
 
 // MakeDecision function create dialog with player and run functions.
@@ -74,10 +74,10 @@ func (p *Player) MakeDecision() {
 	p.PrintCurrentTurn()
 	p.PrintResources()
 
-	fmt.Println("Actions:" +
+	fmt.Println("Действия:" +
 		"\n" +
-		"\n[1] Hire workers or warriors" +
-		"\n[2] Attack another player")
+		"\n[1] Нанять рабочих или воинов" +
+		"\n[2] Атаковать другого игрока")
 	fmt.Println()
 
 	action := readInput(&[]int{1, 2})
@@ -90,10 +90,10 @@ func (p *Player) MakeDecision() {
 		for true {
 			p.PrintResources()
 
-			color.Cyan("Whom to hire?")
-			fmt.Println("\n[1] Worker (cost 5 crystals)" +
-				"\n[2] Warrior (cost 10 crystals)" +
-				"\n[3] Exit and end of Turn")
+			color.Cyan("Кого нанять?")
+			fmt.Println("\n[1] Рабочий (цена 5 кристаллов)" +
+				"\n[2] Воин (цена 10 кристаллов)" +
+				"\n[3] Выйти и закончить ход")
 			fmt.Println()
 
 			hire := readInput(&[]int{1, 2, 3})
@@ -107,15 +107,15 @@ func (p *Player) MakeDecision() {
 			switch hire {
 			case 1:
 				if p.HireWorker() {
-					color.Green("You hired 1 worker.")
+					color.Green("Вы наняли 1 рабочего.")
 				} else {
-					color.Red("Error: You don't have enough crystals.")
+					color.Red("У вас не хватает кристаллов для найма!")
 				}
 			case 2:
 				if p.HireWarrior() {
-					color.Green("You hired 1 warrior.")
+					color.Green("ВЫ наняли 1 воина.")
 				} else {
-					color.Red("Error: You don't have enough crystals.")
+					color.Red("У вас не хватает кристаллов для найма!")
 				}
 			}
 		}
@@ -125,8 +125,14 @@ func (p *Player) MakeDecision() {
 		p.Action = ActionAttack
 	}
 
-	color.Green("-= End of Turn =-")
+	color.Green("= = = = = КОНЕЦ ХОДА = = = = =")
+
+	// Increase player resources.
 	p.NextTurn()
+
+	fmt.Println()
+	color.Blue("Ожидание другого игрока...")
+	fmt.Println()
 }
 
 // Init function clean up player except nickname.

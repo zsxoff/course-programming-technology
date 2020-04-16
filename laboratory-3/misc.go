@@ -29,7 +29,7 @@ func readInput(variations *[]int) int {
 		log.Fatal("No values in read input.")
 	}
 
-	help := "print " + strings.Join(vals[:len(vals)-1], ", ") + " or " + vals[len(vals)-1] + ": "
+	help := "введите " + strings.Join(vals[:len(vals)-1], ", ") + " или " + vals[len(vals)-1] + ": "
 
 	// Scan value.
 	var (
@@ -55,8 +55,10 @@ func readInput(variations *[]int) int {
 			}
 		}
 
-		color.Red("\n! Error: Unknown value <" + scanLine + "> !\n")
+		color.Red("\n! Ошибка: Неизвестное значение <" + scanLine + "> !\n")
 	}
+
 	fmt.Println()
+
 	return val
 }

@@ -129,6 +129,7 @@ func startServerMode(serverPlayer *Player) {
 			}
 		}
 
+		fmt.Println()
 		fmt.Println("Ожидание нового игрока (вы можете остановить сервер с помощью Ctrl+C)")
 	}
 }
@@ -138,15 +139,6 @@ func startClientMode(p *Player) {
 	CONNECT := "127.0.0.1" + PORT
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	// Cleanup player.
-	fmt.Print("Создание нового персонажа... ")
-
-	p.Init()
-
-	fmt.Println("ОК")
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to connect.
 	fmt.Print("Попытка подключиться к удаленному серверу... ")
 
@@ -154,6 +146,15 @@ func startClientMode(p *Player) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("ОК")
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// Cleanup player.
+	fmt.Print("Создание нового персонажа... ")
+
+	p.Init()
 
 	fmt.Println("ОК")
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,6 +191,9 @@ func startClientMode(p *Player) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println()
+	fmt.Println("Вы можете начать новую игру снова подключившись к серверу.")
 }
 
 func main() {
