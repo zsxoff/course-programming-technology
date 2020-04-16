@@ -23,8 +23,8 @@ type ConnectionConfig struct {
 	Port int
 }
 
-func messageSend(text string, conn *net.Conn) {
-	_, err := fmt.Fprintf(*conn, text+"\n")
+func messageSend(text *string, conn *net.Conn) {
+	_, err := fmt.Fprintf(*conn, *text+"\n")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -124,7 +124,7 @@ func startServerMode(connConfig *ConnectionConfig) {
 			}
 
 			// Send message.
-			messageSend(playerStatus, &conn)
+			messageSend(&playerStatus, &conn)
 
 			// Process message.
 			if playerStatus == StatusF {
@@ -182,7 +182,7 @@ func startClientMode(connConfig *ConnectionConfig) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		messageSend(marshal, &conn)
+		messageSend(&marshal, &conn)
 
 		// Receive message.
 		playerStatus := messageRecv(&conn)
