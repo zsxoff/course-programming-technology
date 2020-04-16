@@ -36,15 +36,6 @@ func messageRecv(conn *net.Conn) string {
 
 func startServerMode(serverPlayer *Player) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	// Cleanup player.
-	fmt.Print("Создание нового персонажа... ")
-
-	serverPlayer.Init()
-
-	fmt.Println("ОК")
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to create server.
 	fmt.Print("Создание нового сервер... ")
 
@@ -67,6 +58,15 @@ func startServerMode(serverPlayer *Player) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// Cleanup player.
+		fmt.Print("Создание нового персонажа... ")
+
+		serverPlayer.Init()
+
+		fmt.Println("ОК")
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 		// Run game.
 		fmt.Println("Игра началась!")
@@ -169,7 +169,6 @@ func startClientMode(p *Player) {
 
 		// Receive message.
 		playerStatus := messageRecv(&conn)
-		log.Println("recv " + playerStatus)
 
 		// Process message.
 		if playerStatus == StatusW {
