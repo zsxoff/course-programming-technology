@@ -7,10 +7,9 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"net"
+	"strconv"
 	"strings"
 )
-
-const PORT = ":7778"
 
 const (
 	StatusW         = "W"
@@ -18,6 +17,11 @@ const (
 	StatusD         = "D"
 	StatusUndefined = "U"
 )
+
+type ConnectionConfig struct {
+	Ip   string
+	Port int
+}
 
 func messageSend(text string, conn *net.Conn) {
 	_, err := fmt.Fprintf(*conn, text+"\n")
@@ -34,12 +38,12 @@ func messageRecv(conn *net.Conn) string {
 	return strings.TrimSpace(messageRecv)
 }
 
-func startServerMode(serverPlayer *Player) {
+func startServerMode(serverPlayer *Player, connConfig *ConnectionConfig) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to create server.
 	fmt.Print("Создание нового сервер... ")
 
-	lisn, err := net.Listen("tcp4", PORT)
+	lisn, err := net.Listen("tcp4", ":"+strconv.Itoa(connConfig.Port))
 	defer lisn.Close()
 
 	if err != nil {
@@ -58,6 +62,7 @@ func startServerMode(serverPlayer *Player) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer conn.Close()
 
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Cleanup player.
@@ -134,18 +139,18 @@ func startServerMode(serverPlayer *Player) {
 	}
 }
 
-func startClientMode(p *Player) {
-
-	CONNECT := "127.0.0.1" + PORT
-
+func startClientMode(p *Player, connConfig *ConnectionConfig) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to connect.
 	fmt.Print("Попытка подключиться к удаленному серверу... ")
 
-	conn, err := net.Dial("tcp", CONNECT)
+	address := connConfig.Ip + ":" + strconv.Itoa(connConfig.Port)
+
+	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer conn.Close()
 
 	fmt.Println("ОК")
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,23 +191,40 @@ func startClientMode(p *Player) {
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	// Close connection.
-	err = conn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	fmt.Println()
 	fmt.Println("Вы можете начать новую игру снова подключившись к серверу.")
 }
 
 func main() {
+	// Parse args.
 	var (
 		mode string
+		ip   string
+		port int
 	)
 
 	flag.StringVar(&mode, "mode", "undefined", "client or server mode")
+	flag.StringVar(&ip, "ip", "undefined", "IP address of server")
+	flag.IntVar(&port, "port", -1, "port of server")
 	flag.Parse()
+
+	// Check args.
+	switch mode {
+	case "client":
+		if ip == "undefined" {
+			log.Fatal("Error: incorrect IP address!")
+		}
+		if port == -1 {
+			log.Fatal("Error: incorrect port number!")
+		}
+	case "server":
+		if port == -1 {
+			log.Fatal("Error: incorrect port number!")
+		}
+	}
+
+	// Init connection structure.
+	connConfig := ConnectionConfig{Ip: ip, Port: port}
 
 	// Init player.
 	player := Player{CountCrystals: 25, CountWorkers: 5, CountWarriors: 0}
@@ -210,9 +232,9 @@ func main() {
 	// Init connection.
 	switch mode {
 	case "client":
-		startClientMode(&player)
+		startClientMode(&player, &connConfig)
 	case "server":
-		startServerMode(&player)
+		startServerMode(&player, &connConfig)
 	default:
 		color.Red("Неизвестный режим игры! Используйте параметр client или server")
 	}
