@@ -45,3 +45,10 @@ repos:
         language: system
         entry: flake8
         types: [python]
+
+      - id: go-fmt
+        name: go - gofmt
+        stages: [commit]
+        language: system
+        entry: gofmt
+        types: [go]
