@@ -38,7 +38,7 @@ func messageRecv(conn *net.Conn) string {
 	return strings.TrimSpace(messageRecv)
 }
 
-func startServerMode(serverPlayer *Player, connConfig *ConnectionConfig) {
+func startServerMode(connConfig *ConnectionConfig) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to create server.
 	fmt.Print("Создание нового сервер... ")
@@ -68,6 +68,8 @@ func startServerMode(serverPlayer *Player, connConfig *ConnectionConfig) {
 		// Cleanup player.
 		fmt.Print("Создание нового персонажа... ")
 
+		// Init player.
+		serverPlayer := Player{}
 		serverPlayer.Init()
 
 		fmt.Println("ОК")
@@ -139,7 +141,7 @@ func startServerMode(serverPlayer *Player, connConfig *ConnectionConfig) {
 	}
 }
 
-func startClientMode(p *Player, connConfig *ConnectionConfig) {
+func startClientMode(connConfig *ConnectionConfig) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to connect.
 	fmt.Print("Попытка подключиться к удаленному серверу... ")
@@ -159,6 +161,7 @@ func startClientMode(p *Player, connConfig *ConnectionConfig) {
 	// Cleanup player.
 	fmt.Print("Создание нового персонажа... ")
 
+	p := Player{}
 	p.Init()
 
 	fmt.Println("ОК")
@@ -226,15 +229,12 @@ func main() {
 	// Init connection structure.
 	connConfig := ConnectionConfig{Ip: ip, Port: port}
 
-	// Init player.
-	player := Player{CountCrystals: 25, CountWorkers: 5, CountWarriors: 0}
-
 	// Init connection.
 	switch mode {
 	case "client":
-		startClientMode(&player, &connConfig)
+		startClientMode(&connConfig)
 	case "server":
-		startServerMode(&player, &connConfig)
+		startServerMode(&connConfig)
 	default:
 		color.Red("Неизвестный режим игры! Используйте параметр client или server")
 	}
