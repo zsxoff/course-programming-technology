@@ -16,56 +16,55 @@ const (
 
 // Player users structure.
 type Player struct {
-	Nickname string `json:"nickname"` // Username
-	Warriors int    `json:"warriors"` // Warriors count.
-	Action   int    `json:"action"`   // Action - chill or attack.
-	Crystals int    // Crystals count.
-	Workers  int    // Workers count.
-	turn     int    // Current turn number.
+	Action        int `json:"action"`        // Action - chill or attack.
+	Turn          int `json:"turn"`          // Current turn number.
+	CountWorkers  int `json:"countWorkers"`  // Workers count.
+	CountCrystals int `json:"countCrystals"` // Crystals count.
+	CountWarriors int `json:"countWarriors"` // Warriors count.
 }
 
 // addCrystals function adds the number of crystals equal to the number of workers.
 func (p *Player) addCrystals() {
-	p.Crystals += p.Workers
+	p.CountCrystals += p.CountWorkers
 }
 
 // NextTurn function apply addCrystals() and increase turns count by 1.
 func (p *Player) NextTurn() {
-	p.turn++
+	p.Turn++
 	p.addCrystals()
 }
 
 // HireWorker function adds the one worker and subtracts 5 crystals.
 func (p *Player) HireWorker() bool {
-	if (p.Crystals) < 5 {
+	if (p.CountCrystals) < 5 {
 		return false
 	}
-	p.Workers++
-	p.Crystals -= 5
+	p.CountWorkers++
+	p.CountCrystals -= 5
 	return true
 }
 
 // HireWarrior function adds the one warrior and subtracts 10 crystals.
 func (p *Player) HireWarrior() bool {
-	if (p.Crystals) < 10 {
+	if (p.CountCrystals) < 10 {
 		return false
 	}
-	p.Warriors++
-	p.Crystals -= 10
+	p.CountWarriors++
+	p.CountCrystals -= 10
 	return true
 }
 
-// PrintCurrentTurn print colored current turn number.
+// PrintCurrentTurn print colored current Turn number.
 func (p *Player) PrintCurrentTurn() {
-	color.Green("\n-= Turn #" + strconv.Itoa(p.turn) + " =-\n\n")
+	color.Green("\n-= Turn #" + strconv.Itoa(p.Turn) + " =-\n\n")
 }
 
 // PrintResources function print player's current resources.
 func (p *Player) PrintResources() {
 	color.Yellow("You have " +
-		strconv.Itoa(p.Crystals) + " crystals, " +
-		strconv.Itoa(p.Workers) + " workers and " +
-		strconv.Itoa(p.Warriors) + " warriors.\n\n")
+		strconv.Itoa(p.CountCrystals) + " crystals, " +
+		strconv.Itoa(p.CountWorkers) + " workers and " +
+		strconv.Itoa(p.CountWarriors) + " warriors.\n\n")
 }
 
 // MakeDecision function create dialog with player and run functions.
@@ -94,7 +93,7 @@ func (p *Player) MakeDecision() {
 			color.Cyan("Whom to hire?")
 			fmt.Println("\n[1] Worker (cost 5 crystals)" +
 				"\n[2] Warrior (cost 10 crystals)" +
-				"\n[3] Exit and end of turn")
+				"\n[3] Exit and end of Turn")
 			fmt.Println()
 
 			hire := readInput(&[]int{1, 2, 3})
@@ -126,17 +125,17 @@ func (p *Player) MakeDecision() {
 		p.Action = ActionAttack
 	}
 
-	color.Green("-= End of turn =-")
+	color.Green("-= End of Turn =-")
 	p.NextTurn()
 }
 
 // Init function clean up player except nickname.
 func (p *Player) Init() {
-	p.Warriors = 0
+	p.CountWarriors = 0
 	p.Action = ActionChill
-	p.Crystals = 5
-	p.Workers = 0
-	p.turn = 0
+	p.CountCrystals = 5
+	p.CountWorkers = 0
+	p.Turn = 0
 }
 
 // ToJson function convert player to string JSON.

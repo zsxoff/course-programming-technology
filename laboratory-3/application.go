@@ -83,7 +83,7 @@ func startServerMode(p *Player) {
 			playerStatus := StatusUndefined
 
 			if clientPlayer.Action == ActionAttack || p.Action == ActionAttack {
-				if clientPlayer.Warriors > p.Warriors {
+				if clientPlayer.CountWarriors > p.CountWarriors {
 					playerStatus = StatusW // Player win.
 				} else {
 					playerStatus = StatusF // Player lose.
@@ -176,17 +176,7 @@ func main() {
 	flag.Parse()
 
 	// Init player.
-	fmt.Print("Enter your nickname: ")
-
-	var nickname string
-	_, err := fmt.Scanln(&nickname)
-	if err != nil {
-		log.Fatal(err)
-	}
-	color.Cyan("\nHello, " + nickname + "!")
-
-	player := Player{Crystals: 25, Workers: 5, Warriors: 0}
-	player.Nickname = nickname
+	player := Player{CountCrystals: 25, CountWorkers: 5, CountWarriors: 0}
 
 	// Init connection.
 	switch mode {
