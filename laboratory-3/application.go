@@ -45,12 +45,25 @@ func messageRecv(conn *net.Conn) string {
 	return strings.TrimSpace(messageRecv)
 }
 
+// GetOutboundIP dirty hack returns IP of machine.
+func GetOutboundIP() string {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP.String()
+}
+
 func startServerMode(connConfig *ConnectionConfig) {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Try to create server.
 	fmt.Print("Создание нового сервер... ")
 
-	lisn, err := net.Listen("tcp4", ":"+strconv.Itoa(connConfig.Port))
+	lisn, err := net.Listen("tcp", GetOutboundIP()+":"+strconv.Itoa(connConfig.Port))
 	defer lisn.Close()
 
 	if err != nil {
