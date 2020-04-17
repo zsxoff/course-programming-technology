@@ -53,11 +53,12 @@ func startServerMode(connConfig *ConnectionConfig) {
 	fmt.Println("ОК")
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	color.Green("Теперь вы - сервер! Вы можете пригласить соперника по адресу: " + lisn.Addr().String())
-
 	// Accept new connection.
-	fmt.Println("Ожидание игроков...")
 	for {
+		fmt.Println()
+		fmt.Println("Вы можете пригласить соперника по адресу: " + lisn.Addr().String())
+		fmt.Println("Ожидание нового игрока (вы можете остановить сервер с помощью Ctrl+C)")
+
 		conn, err := lisn.Accept()
 		if err != nil {
 			log.Fatal(err)
@@ -139,9 +140,6 @@ func startServerMode(connConfig *ConnectionConfig) {
 				color.Yellow("За прошедший ход не было сражений...")
 			}
 		}
-
-		fmt.Println()
-		fmt.Println("Ожидание нового игрока (вы можете остановить сервер с помощью Ctrl+C)")
 	}
 }
 

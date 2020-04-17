@@ -108,13 +108,13 @@ func (p *Player) MakeDecision() {
 				if p.HireWorker() {
 					color.Green("Вы наняли 1 рабочего.")
 				} else {
-					color.Red("У вас не хватает кристаллов для найма!")
+					color.Red("У вас не хватает кристаллов для найма рабочего!")
 				}
 			case 2:
 				if p.HireWarrior() {
 					color.Green("ВЫ наняли 1 воина.")
 				} else {
-					color.Red("У вас не хватает кристаллов для найма!")
+					color.Red("У вас не хватает кристаллов для найма воина!")
 				}
 			}
 		}
