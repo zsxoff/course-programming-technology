@@ -8,22 +8,40 @@
 
 ## Запуск
 
+### Имитация нескольких вычислительных устройств с помощью Docker
+
+Создание подсети для контейнеров выполняется командой:
+
+```bash
+docker network create lab-net
+```
+
+Сборка Docker-контейнера выполняется с помощью команды:
+
+```bash
+docker build -t "lab-container-3" .
+```
+
+Запуск контейнеров для клиента и сервера выполняется с помощью запуска скриптов в контейнере:
+
+> Порт по умолчанию: 7777
+
+```bash
+docker run --rm -it --net=lab-net lab-container-3 ./laboratory-3 -mode=server -port=7777
+docker run --rm -it --net=lab-net lab-container-3 ./laboratory-3 -mode=client -port=7777 -ip=SERVERADDR
+```
+
+### Сборка и запуск программы на одном вычислительном устройстве
+
 Сборка программы выполняется с помощью команды:
 
 ```bash
 go build
 ```
 
-Запуск клиента и сервера выполняется соответствующими скриптами:
+Запуск сервера и клиента выполняется командами:
 
 ```bash
-./start_server.sh
-./start_client.sh
-```
-
-или командами:
-
-```bash
-./laboratory-3 -mode=server -port=7777 -ip=0.0.0.0
-./laboratory-3 -mode=client -port=7777 -ip=0.0.0.0
+./laboratory-3 -mode=server -port=7777
+./laboratory-3 -mode=client -port=7777 -ip=SERVERADDR
 ```
