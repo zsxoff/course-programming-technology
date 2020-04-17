@@ -19,7 +19,7 @@ docker network create lab-net
 Сборка Docker-контейнера выполняется с помощью команды:
 
 ```bash
-docker build -t "lab-container-3" .
+docker build -t "lab-container:3" .
 ```
 
 Запуск контейнеров для клиента и сервера выполняется с помощью запуска скриптов в контейнере:
@@ -27,8 +27,8 @@ docker build -t "lab-container-3" .
 > Порт по умолчанию: 7777
 
 ```bash
-docker run --rm -it --net=lab-net lab-container-3 ./laboratory-3 -mode=server -port=7777
-docker run --rm -it --net=lab-net lab-container-3 ./laboratory-3 -mode=client -port=7777 -ip=SERVERADDR
+docker run --rm -it --net=lab-net lab-container:3 ./laboratory-3 -mode=server -port=7777
+docker run --rm -it --net=lab-net lab-container:3 ./laboratory-3 -mode=client -port=7777 -ip=SERVERADDR
 ```
 
 ### Сборка и запуск программы на одном вычислительном устройстве
