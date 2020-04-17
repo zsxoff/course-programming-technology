@@ -12,10 +12,17 @@ import (
 )
 
 const (
-	StatusW         = "W"
-	StatusF         = "F"
-	StatusD         = "D"
-	StatusUndefined = "U"
+	RecvStatusWin   = "W"
+	RecvStatusFail  = "F"
+	RecvStatusDraw  = "D"
+	RecvStatusUndef = "U"
+)
+
+const (
+	TextWin   = "Ура, вы победили! Войско противника было разбито!"
+	TextFail  = "Увы, вы проиграли! У вас не хватило воинов для атаки/защиты..."
+	TextDraw  = "Игроки напали одновременно, но не смогли победить друг друга!"
+	TextUndef = "За прошедший ход не было сражений..."
 )
 
 type ConnectionConfig struct {
@@ -93,34 +100,34 @@ func startServerMode(connConfig *ConnectionConfig) {
 			}
 
 			// Resolve players battle.
-			playerStatus := StatusUndefined
+			playerStatus := RecvStatusUndef
 
 			// If attacker - Client.
 			if clientPlayer.Action == ActionAttack && serverPlayer.Action == ActionChill {
 				if clientPlayer.CountWarriors > serverPlayer.CountWarriors {
-					playerStatus = StatusW // Player win.
+					playerStatus = RecvStatusWin // Player win.
 				} else {
-					playerStatus = StatusF // Player lose.
+					playerStatus = RecvStatusFail // Player lose.
 				}
 			}
 
 			// If attacker - Server.
 			if serverPlayer.Action == ActionAttack && clientPlayer.Action == ActionChill {
 				if serverPlayer.CountWarriors > clientPlayer.CountWarriors {
-					playerStatus = StatusF // Server win.
+					playerStatus = RecvStatusFail // Server win.
 				} else {
-					playerStatus = StatusW // Server lose.
+					playerStatus = RecvStatusWin // Server lose.
 				}
 			}
 
 			// If attacker - Client and Server.
 			if clientPlayer.Action == ActionAttack && serverPlayer.Action == ActionAttack {
 				if clientPlayer.CountWarriors > serverPlayer.CountWarriors {
-					playerStatus = StatusW // Player win.
+					playerStatus = RecvStatusWin // Player win.
 				} else if clientPlayer.CountWarriors < serverPlayer.CountWarriors {
-					playerStatus = StatusF // Player lose.
+					playerStatus = RecvStatusFail // Player lose.
 				} else {
-					playerStatus = StatusD // Draw.
+					playerStatus = RecvStatusDraw // Draw.
 				}
 			}
 
@@ -128,16 +135,16 @@ func startServerMode(connConfig *ConnectionConfig) {
 			messageSend(&playerStatus, &conn)
 
 			// Process message.
-			if playerStatus == StatusF {
-				color.Green("Ура, вы победили! Войско противника было разбито!")
+			if playerStatus == RecvStatusFail {
+				color.Green(TextWin)
 				break
-			} else if playerStatus == StatusW {
-				color.Red("Увы, вы проиграли! У вас не хватило воинов для атаки/защиты...")
+			} else if playerStatus == RecvStatusWin {
+				color.Red(TextFail)
 				break
-			} else if playerStatus == StatusD {
-				color.Yellow("Игроки напали одновременно, но не смогли победить друг друга!")
+			} else if playerStatus == RecvStatusDraw {
+				color.Yellow(TextDraw)
 			} else {
-				color.Yellow("За прошедший ход не было сражений...")
+				color.Yellow(TextUndef)
 			}
 		}
 	}
@@ -186,16 +193,16 @@ func startClientMode(connConfig *ConnectionConfig) {
 		playerStatus := messageRecv(&conn)
 
 		// Process message.
-		if playerStatus == StatusW {
-			color.Green("Ура, вы победили! Войско противника было разбито!")
+		if playerStatus == RecvStatusWin {
+			color.Green(TextWin)
 			break
-		} else if playerStatus == StatusF {
-			color.Red("Увы, вы проиграли! У вас не хватило воинов для атаки/защиты...")
+		} else if playerStatus == RecvStatusFail {
+			color.Red(TextFail)
 			break
-		} else if playerStatus == StatusD {
-			color.Yellow("Игроки напали одновременно, но не смогли победить друг друга!")
+		} else if playerStatus == RecvStatusDraw {
+			color.Yellow(TextDraw)
 		} else {
-			color.Yellow("За прошедший ход не было сражений...")
+			color.Yellow(TextUndef)
 		}
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
