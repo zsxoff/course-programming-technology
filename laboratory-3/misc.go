@@ -37,7 +37,7 @@ func readInput(variations *[]int) int {
 		err error
 	)
 
-	for true {
+	for {
 		fmt.Print(help)
 
 		// Scan value.

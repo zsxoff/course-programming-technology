@@ -103,7 +103,7 @@ func (p *Player) MakeDecision() {
 	// Hire menu.
 	case 1:
 		p.Action = ActionChill
-		for true {
+		for {
 			p.PrintResources()
 
 			color.Cyan("Кого нанять?")
