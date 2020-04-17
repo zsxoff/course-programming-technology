@@ -129,7 +129,7 @@ func startServerMode(connConfig *ConnectionConfig) {
 
 			// Process message.
 			if playerStatus == StatusF {
-				color.Green("Ура, вы победили!")
+				color.Green("Ура, вы победили! Войско противника было разбито!")
 				break
 			} else if playerStatus == StatusW {
 				color.Red("Увы, вы проиграли! У вас не хватило воинов для атаки/защиты...")
@@ -187,7 +187,7 @@ func startClientMode(connConfig *ConnectionConfig) {
 
 		// Process message.
 		if playerStatus == StatusW {
-			color.Green("Ура, вы победили!")
+			color.Green("Ура, вы победили! Войско противника было разбито!")
 			break
 		} else if playerStatus == StatusF {
 			color.Red("Увы, вы проиграли! У вас не хватило воинов для атаки/защиты...")

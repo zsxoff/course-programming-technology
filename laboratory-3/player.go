@@ -63,6 +63,18 @@ func (p *Player) PrintTurnEnd() {
 	color.Green("\n= = = = = КОНЕЦ ХОДА " + strconv.Itoa(p.Turn) + " = = = = =\n\n")
 }
 
+// PrintDecision function print colorful text of player decision - attack or chill.
+func (p *Player) PrintDecision() {
+	fmt.Println()
+	switch p.Action {
+	case ActionChill:
+		color.Yellow("Вы решили не атаковать")
+	case ActionAttack:
+		color.Yellow("Вы решили атаковать")
+	}
+	fmt.Println()
+}
+
 // PrintResources function print player's current resources.
 func (p *Player) PrintResources() {
 	color.Yellow("Ваши ресурсы: " +
@@ -129,6 +141,7 @@ func (p *Player) MakeDecision() {
 		p.Action = ActionAttack
 	}
 
+	p.PrintDecision()
 	p.PrintTurnEnd()
 
 	// Increase player resources.
