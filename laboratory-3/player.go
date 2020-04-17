@@ -53,9 +53,14 @@ func (p *Player) HireWarrior() bool {
 	return true
 }
 
-// PrintCurrentTurn print colored current Turn number.
-func (p *Player) PrintCurrentTurn() {
-	color.Green("\n- - = Ход #" + strconv.Itoa(p.Turn) + " = - -\n\n")
+// PrintTurnBegin print colored begin text and current turn number.
+func (p *Player) PrintTurnBegin() {
+	color.Green("\n= = = = = НАЧАЛО ХОДА " + strconv.Itoa(p.Turn) + " = = = = =\n\n")
+}
+
+// PrintTurnEnd print colored end text and current turn number.
+func (p *Player) PrintTurnEnd() {
+	color.Green("\n= = = = = КОНЕЦ ХОДА " + strconv.Itoa(p.Turn) + " = = = = =\n\n")
 }
 
 // PrintResources function print player's current resources.
@@ -70,7 +75,7 @@ func (p *Player) PrintResources() {
 func (p *Player) MakeDecision() {
 
 	// Read action.
-	p.PrintCurrentTurn()
+	p.PrintTurnBegin()
 	p.PrintResources()
 
 	fmt.Println("Действия:" +
@@ -124,7 +129,7 @@ func (p *Player) MakeDecision() {
 		p.Action = ActionAttack
 	}
 
-	color.Green("= = = = = КОНЕЦ ХОДА = = = = =")
+	p.PrintTurnEnd()
 
 	// Increase player resources.
 	p.NextTurn()
@@ -140,7 +145,7 @@ func (p *Player) Init() {
 	p.Action = ActionChill
 	p.CountCrystals = 5
 	p.CountWorkers = 0
-	p.Turn = 0
+	p.Turn = 1
 }
 
 // ToJson function convert player to string JSON.
